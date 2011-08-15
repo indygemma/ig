@@ -1,0 +1,15 @@
+-main UnitTest
+-neko unittest.n
+-lib neash
+-debug
+-lib physaxe
+
+--next
+
+-main Main
+-swf main.swf
+-swf-version 9
+-swf-header 800:600:100:334433
+-lib neash
+-lib physaxe
+-debug
