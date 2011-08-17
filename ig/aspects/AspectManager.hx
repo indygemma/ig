@@ -1,14 +1,26 @@
 package ig.aspects;
 
+import haxe.FastList;
 import ig.core.Actor;
-import ig.utils.Singleton;
+using ig.utils.Singleton;
 
-class AspectManager extends Singleton {
+typedef AspectList = FastList<Aspect>;
+
+class AspectManager {
 
     var _actors : Hash<Actor>; // name -> actor class
+    var _aspects : AspectList; // [aspect1, aspect2, ...]
+    var _aspects_by_type : Hash<AspectList>; // { aspect_class_name : [
+                                                   //     aspect1,
+                                                   //     aspect2,
+                                                   //     ...
+                                                   //   ]
+                                                   // }
 
     public function new() {
         _actors = new Hash<Actor>();
+        _aspects = new FastList<Aspect>();
+        _aspects_by_type = new Hash<AspectList>();
     }
 
     /*
@@ -35,4 +47,29 @@ class AspectManager extends Singleton {
         }
         return result;
     }
+
+    /*
+    * registerAspect -- register an aspect instance to the registry
+    */
+    public function registerAspect( aspect:Aspect ) {
+        _aspects.add(aspect);
+        var aspect_class = Type.getClassName(Type.getClass(aspect));
+        if (!_aspects_by_type.exists(aspect_class)) {
+            var aspect_class_list = new FastList<Aspect>();
+            _aspects_by_type.set(aspect_class, aspect_class_list);
+        }
+        _aspects_by_type.get(aspect_class).add(aspect);
+    }
+
+    /*
+    * getAspectsByType -- retrieve all aspect instances of a given type
+    */
+    public function getAspectsByType( aspect_class:Class<Aspect> ) : haxe.FastList<Aspect> {
+        return _aspects_by_type.get(Type.getClassName(aspect_class));
+    }
+
+    public function update() {
+
+    }
+
 }
