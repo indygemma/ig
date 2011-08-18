@@ -97,7 +97,7 @@ class Actor {
     */
     private function extractAspectClassEntry( entry:Dynamic ) {
         if (Std.is(entry, Array)) {
-            return { aspect: entry[0], args: [entry[1]] };
+            return { aspect: entry[0], args: entry[1] };
         } else {
             return { aspect: entry, args: [] };
         }
@@ -161,5 +161,55 @@ class Actor {
 
     public function getAspectInstances() {
         return _aspect_instances;
+    }
+
+    /* Aspect Class manipulation. to be used within setup() */
+
+    public function addAspect( aspect_class:Class<Aspect>, args:Array<Dynamic> ) {
+        _aspects.push([aspect_class, args]);
+    }
+
+    /*
+    * TODO: this is a highly inefficient procedure. improve it!
+    *       may need another data structure to hold the aspects
+    */
+    public function removeAspect( aspect_class:Class<Aspect> ) {
+        var idx:Int = 0;
+        var found:Int = -1;
+        for ( entry in _aspects ) {
+            var aa = this.extractAspectClassEntry(entry);
+            if ( aspect_class == aa.aspect ) {
+                found = idx;
+            }
+            idx++;
+        }
+        if (found != -1) {
+            _aspects = _aspects.splice(found, 1);
+        }
+    }
+
+    public function changeAspect( aspect_class:Class<Aspect>, args:Array<Dynamic> ) {
+        this.removeAspect( aspect_class );
+        this.addAspect( aspect_class, args );
+    }
+
+    /*
+    * preUpdate
+    *
+    * gets called before the aspects are updated
+    *
+    */
+    public function preUpdate() {
+
+    }
+
+    /*
+    * postUpdate
+    *
+    * gets called after the aspects are updated
+    *
+    */
+    public function postUpdate() {
+
     }
 }

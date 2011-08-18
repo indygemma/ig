@@ -2,6 +2,7 @@ package ig.core;
 
 import ig.core.Actor;
 import ig.aspects.Aspect;
+import ig.aspects.Sleepable;
 
 using ig.utils.Singleton;
 
@@ -49,9 +50,18 @@ class ActorManager {
         for ( uuid in self._actors.keys() ) {
             var actor = self._actors.get(uuid);
             if (!actor.skip_update) {
+                actor.preUpdate();
                 for ( aspect in actor.aspect_instances ) {
-                    aspect.update();
+                    if (aspect.active) {
+                        aspect.update();
+                    }
                 }
+                actor.postUpdate();
+            } else {
+                // update the sleepable aspect associated with this actor
+                // otherwise the actor won't wake up.
+                var sleepable = cast(actor.getAspect(Sleepable), Sleepable);
+                sleepable.update();
             }
         }
     }

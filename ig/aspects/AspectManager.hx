@@ -68,6 +68,10 @@ class AspectManager {
         return _aspects_by_type.get(Type.getClassName(aspect_class));
     }
 
+    public function verifyDependencies() {
+        
+    }
+
     public function update() {
 
     }

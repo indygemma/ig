@@ -5,11 +5,16 @@ import ig.core.Actor;
 class Aspect {
 
     var _actor : Actor;
+    var _dependencies : Array<Class<Aspect>>;
+    var _active : Bool;
 
     public var actor(getActor, setActor) : Actor;
+    public var dependencies(getDependencies, null) : Array<Class<Aspect>>;
+    public var active(getActive, setActive) : Bool;
 
     public function new() {
-
+        // aspects are updated only when they're active
+        active = true;
     }
 
     /*
@@ -38,12 +43,31 @@ class Aspect {
 
     }
 
+    public function getActor() : Actor {
+        return _actor;
+    }
+
     public function setActor(actor:Actor) : Actor {
         _actor = actor;
         return _actor;
     }
 
-    public function getActor() : Actor {
-        return _actor;
+    public function getDependencies() : Array<Class<Aspect>> {
+        return _dependencies;
+    }
+
+    public function depends( aspect_class:Class<Aspect> ) {
+        _dependencies.push(aspect_class);
+    }
+
+    public function getActive() { return _active; }
+    public function setActive( active:Bool ) { _active = active; return _active; }
+
+    public function activate() {
+        this.active = true;
+    }
+
+    public function deactivate() {
+        this.active = false;
     }
 }
