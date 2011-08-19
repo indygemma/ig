@@ -227,36 +227,21 @@ class Box {
     var _content_height : Int;
 
     // original points
-    var _poX : Int;
-    var _poY : Int;
-
+    var _po : Position;
     // margin points
-    var _pmX : Int;
-    var _pmY : Int;
-
+    var _pm : Position;
     // border points
-    var _pbX : Int;
-    var _pbY : Int;
-
+    var _pb : Position;
     // padding points
-    var _ppX : Int;
-    var _ppY : Int;
-
+    var _pp : Position;
     // end padding points
-    var _eppX : Int;
-    var _eppY : Int;
-
+    var _epp : Position;
     // end border points
-    var _epbX : Int;
-    var _epbY : Int;
-
+    var _epb : Position;
     // end margin points
-    var _epmX : Int;
-    var _epmY : Int;
-
+    var _epm : Position;
     // end original points
-    var _epoX : Int;
-    var _epoY : Int;
+    var _epo : Position;
 
     var _padded_width : Int;
     var _padded_height : Int;
@@ -277,8 +262,14 @@ class Box {
 
     public function new( kwargs:Dynamic ) {
         var attrs:BoxAttrs = new BoxAttrs(kwargs);
-        _poX = 0;
-        _poY = 0;
+        _po = new Position(0,0);
+        _pm = new Position(0,0);
+        _pb = new Position(0,0);
+        _pp = new Position(0,0);
+        _epp = new Position(0,0);
+        _epb = new Position(0,0);
+        _epm = new Position(0,0);
+        _epo = new Position(0,0);
         _padding = new Padding(attrs);
         _margin  = new Margin(attrs);
         _border  = new Border(attrs);
@@ -323,8 +314,7 @@ class Box {
     }
 
     public function setPos( pos:Position ) {
-        _poX = pos.x;
-        _poY = pos.y;
+        _po = pos;
 
         this.calculateInternalPoints();
         this.recalculateWidthAndHeight();
@@ -332,73 +322,73 @@ class Box {
 
     public function calculateInternalPoints() {
         // margin points
-        _pmX = _poX + this.getMargin(Alignment.LEFT);
-        _pmY = _poY + this.getMargin(Alignment.TOP);
+        _pm.x = _po.x + this.getMargin(Alignment.LEFT);
+        _pm.y = _po.y + this.getMargin(Alignment.TOP);
 
         // border points
-        _pbX = _pmX + this.getBorder(Alignment.LEFT);
-        _pbY = _pmY + this.getBorder(Alignment.TOP);
+        _pb.x = _pm.x + this.getBorder(Alignment.LEFT);
+        _pb.y = _pm.y + this.getBorder(Alignment.TOP);
 
         // padding points
-        _ppX = _pbX + this.getPadding(Alignment.LEFT);
-        _ppY = _pbY + this.getPadding(Alignment.TOP);
+        _pp.x = _pb.x + this.getPadding(Alignment.LEFT);
+        _pp.y = _pb.y + this.getPadding(Alignment.TOP);
 
         // end padding points
-        _eppX = _ppX + this.getContentWidth();
-        _eppY = _ppY + this.getContentHeight();
+        _epp.x = _pp.x + this.getContentWidth();
+        _epp.y = _pp.y + this.getContentHeight();
 
         // end border points
-        _epbX = _eppX + this.getPadding(Alignment.RIGHT);
-        _epbY = _eppY + this.getPadding(Alignment.BOTTOM);
+        _epb.x = _epp.x + this.getPadding(Alignment.RIGHT);
+        _epb.y = _epp.y + this.getPadding(Alignment.BOTTOM);
 
         // end margin points
-        _epmX = _epbX + this.getBorder(Alignment.RIGHT);
-        _epmY = _epbY + this.getBorder(Alignment.BOTTOM);
+        _epm.x = _epb.x + this.getBorder(Alignment.RIGHT);
+        _epm.y = _epb.y + this.getBorder(Alignment.BOTTOM);
 
         // end original points
-        _epoX = _epmX + this.getMargin(Alignment.RIGHT);
-        _epoY = _epmY + this.getMargin(Alignment.BOTTOM);
+        _epo.x = _epm.x + this.getMargin(Alignment.RIGHT);
+        _epo.y = _epm.y + this.getMargin(Alignment.BOTTOM);
     }
 
     public function recalculateWidthAndHeight() {
-        _padded_width    = _epbX - _pbX;
-        _padded_height   = _epbY - _pbY;
-        _bordered_width  = _epmX - _pmX;
-        _bordered_height = _epmY - _pmY;
-        _margined_width  = _epoX - _poX;
-        _margined_height = _epoY - _poY;
+        _padded_width    = _epb.x - _pb.x;
+        _padded_height   = _epb.y - _pb.y;
+        _bordered_width  = _epm.x - _pm.x;
+        _bordered_height = _epm.y - _pm.x;
+        _margined_width  = _epo.x - _po.x;
+        _margined_height = _epo.y - _po.y;
     }
 
     public function getOriginalPoint() {
-        return new Position( _poX, _poY );
+        return _po;
     }
 
     public function getMarginPoint() {
-        return new Position( _pmX, _pmY );
+        return _pm;
     }
 
     public function getBorderPoint() {
-        return new Position( _pbX, _pbY );
+        return _pb;
     }
 
     public function getPaddingPoint() {
-        return new Position( _ppX, _ppY );
+        return _pp;
     }
 
     public function getOriginalEndPoint() {
-        return new Position( _epoX, _epoY );
+        return _epo;
     }
 
     public function getMarginEndPoint() {
-        return new Position( _epmX, _epmY );
+        return _epm;
     }
 
     public function getBorderEndPoint() {
-        return new Position( _epbX, _epbY );
+        return _epb;
     }
 
     public function getPaddingEndPoint() {
-        return new Position( _eppX, _eppY );
+        return _epp;
     }
 
     public function getContentWidth() {
